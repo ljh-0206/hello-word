@@ -181,13 +181,32 @@ export function createGame(onWin, onLose) {
     }
   }
 
-  function killTank(tank, isPlayerBullet) {
+  function killTank(tank) {
     tank.alive = false
     addExplosion(tank.x, tank.y, true)
+  }
 
-    if (isPlayerBullet && tank.alive === false) {
-      state.player.score += tank.type === TANK_HEAVY ? HEAVY_SCORE : ENEMY_SCORE
+  function collectPowerUp() {
+    const pu = state.powerUp
+    if (!pu) return
+    if (pu.type === POWER_STAR) {
+      state.player.fireLevel = Math.min(3, state.player.fireLevel + 1)
+    } else if (pu.type === POWER_SHIELD) {
+      state.player.shieldTimer = 300
+      state.player.invulnTimer = 300
+    } else if (pu.type === POWER_BOMB) {
+      for (const e of state.enemies) {
+        if (e.alive) {
+          e.alive = false
+          addExplosion(e.x, e.y, false)
+          state.player.score += e.type === TANK_HEAVY ? HEAVY_SCORE : ENEMY_SCORE
+        }
+      }
+      state.enemies = state.enemies.filter(e => e.alive)
+      state.killCount += 10
     }
+    state.powerUp = null
+    state.powerUpTimer = 0
   }
 
   return {
@@ -195,16 +214,15 @@ export function createGame(onWin, onLose) {
     update() {
       if (state.gameOver) return
 
-      let allTanks = [...state.enemies]
-      if (state.player.alive) allTanks.push(state.player)
+      const enemyTanksOnly = [...state.enemies]
 
       // player
       if (state.player.alive) {
         const k = state.keys
-        if (k['ArrowUp']) { state.player.dir = DIR_UP; moveTank(state.map, state.player, DIR_UP, TANK_SPEED, allTanks) }
-        else if (k['ArrowDown']) { state.player.dir = DIR_DOWN; moveTank(state.map, state.player, DIR_DOWN, TANK_SPEED, allTanks) }
-        else if (k['ArrowLeft']) { state.player.dir = DIR_LEFT; moveTank(state.map, state.player, DIR_LEFT, TANK_SPEED, allTanks) }
-        else if (k['ArrowRight']) { state.player.dir = DIR_RIGHT; moveTank(state.map, state.player, DIR_RIGHT, TANK_SPEED, allTanks) }
+        if (k['ArrowUp']) { state.player.dir = DIR_UP; moveTank(state.map, state.player, DIR_UP, TANK_SPEED, enemyTanksOnly) }
+        else if (k['ArrowDown']) { state.player.dir = DIR_DOWN; moveTank(state.map, state.player, DIR_DOWN, TANK_SPEED, enemyTanksOnly) }
+        else if (k['ArrowLeft']) { state.player.dir = DIR_LEFT; moveTank(state.map, state.player, DIR_LEFT, TANK_SPEED, enemyTanksOnly) }
+        else if (k['ArrowRight']) { state.player.dir = DIR_RIGHT; moveTank(state.map, state.player, DIR_RIGHT, TANK_SPEED, enemyTanksOnly) }
 
         state.player.cooldown--
         if (k[' '] && state.player.cooldown <= 0) {
@@ -342,7 +360,7 @@ export function createGame(onWin, onLose) {
           const pw = 24
           const puRect = { x: state.powerUp.x - pw / 2, y: state.powerUp.y - pw / 2, w: pw, h: pw }
           if (rectsOverlap(pr, puRect)) {
-            collectPowerUp(state)
+            collectPowerUp()
           }
         }
       }
@@ -354,6 +372,7 @@ export function createGame(onWin, onLose) {
         state.player.dir = DIR_UP
         state.player.alive = true
         state.player.invulnTimer = INVULN_DURATION
+        state.player.shieldTimer = INVULN_DURATION
         state.player.cooldown = 0
       }
 
@@ -412,27 +431,4 @@ export function createGame(onWin, onLose) {
       state.powerUpTimer = 0
     }
   }
-}
-
-function collectPowerUp(state) {
-  const pu = state.powerUp
-  if (!pu) return
-  if (pu.type === POWER_STAR) {
-    state.player.fireLevel = Math.min(3, state.player.fireLevel + 1)
-  } else if (pu.type === POWER_SHIELD) {
-    state.player.shieldTimer = 300
-    state.player.invulnTimer = 300
-  } else if (pu.type === POWER_BOMB) {
-    for (const e of state.enemies) {
-      if (e.alive) {
-        e.alive = false
-        addExplosion(e.x, e.y, false)
-        state.player.score += e.type === TANK_HEAVY ? HEAVY_SCORE : ENEMY_SCORE
-      }
-    }
-    state.enemies = state.enemies.filter(e => e.alive)
-    state.killCount += 10
-  }
-  state.powerUp = null
-  state.powerUpTimer = 0
 }
