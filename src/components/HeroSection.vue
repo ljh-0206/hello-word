@@ -1,87 +1,129 @@
 <template>
   <section class="hero">
-    <h1 class="hero-title">探索未至之境</h1>
+    <div class="geo geo-1"></div>
+    <div class="geo geo-2"></div>
+
+    <h1 class="hero-title">DeepSeek 项目成果</h1>
     <p class="hero-desc">
-      由深度求索公司研发的 AI 推理模型，具备强大的推理能力、多模态理解与长上下文处理能力，开源可商用。
+      基于 DeepSeek 能力打造的开源项目合集。从经典游戏复刻到创新应用探索，
+      每个项目都是用 AI 辅助开发的实践尝试。
     </p>
-    <div class="hero-actions">
-      <a href="https://chat.deepseek.com" class="btn btn-primary" target="_blank" rel="noopener">开始对话</a>
-      <a href="https://platform.deepseek.com" class="btn btn-outline" target="_blank" rel="noopener">API 开放平台</a>
+
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-num">1</span>
+        <span class="stat-label">已上线</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-label">技术栈</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">更多</span>
+        <span class="stat-label">待发布</span>
+      </div>
     </div>
   </section>
 </template>
 
 <style scoped>
 .hero {
-  padding: 120px 24px 64px;
+  padding: 80px 24px 48px;
   text-align: center;
   max-width: 640px;
   margin: 0 auto;
+  position: relative;
+}
+
+.geo {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  pointer-events: none;
+}
+.geo-1 {
+  width: 60px;
+  height: 60px;
+  top: 40px;
+  left: -20px;
+  opacity: 0.4;
+}
+.geo-2 {
+  width: 40px;
+  height: 40px;
+  bottom: 60px;
+  right: -10px;
+  opacity: 0.3;
 }
 
 .hero-title {
-  font-size: 48px;
+  font-size: 36px;
   font-weight: 700;
   color: var(--text-h);
-  letter-spacing: -1.2px;
+  letter-spacing: -0.8px;
   margin: 0 0 16px;
-  line-height: 1.15;
+  line-height: 1.2;
+  position: relative;
 }
 
 .hero-desc {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text);
-  line-height: 1.7;
-  margin: 0 0 32px;
+  line-height: 1.8;
+  margin: 0 0 36px;
+  position: relative;
 }
 
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn {
+.stats {
   display: inline-flex;
   align-items: center;
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: var(--accent-hover);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--text-h);
+  gap: 24px;
+  padding: 16px 32px;
+  background: var(--card-bg);
   border: 1px solid var(--border);
+  border-radius: 12px;
+  position: relative;
 }
-
-.btn-outline:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.stat-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-h);
+  line-height: 1.1;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--label-dim);
+}
+.stat-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border);
 }
 
 @media (max-width: 640px) {
   .hero {
-    padding: 100px 16px 48px;
+    padding: 64px 16px 32px;
   }
   .hero-title {
-    font-size: 32px;
+    font-size: 28px;
   }
-  .hero-desc {
-    font-size: 15px;
+  .stats {
+    gap: 16px;
+    padding: 12px 20px;
+  }
+  .stat-num {
+    font-size: 18px;
+  }
+  .geo-1, .geo-2 {
+    display: none;
   }
 }
 </style>
