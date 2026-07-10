@@ -85,7 +85,7 @@ export function createGame(onWin, onLose) {
   const state = {
     map,
     player: {
-      x: 9 * TILE + TILE / 2,
+      x: 4 * TILE + TILE / 2,
       y: 14 * TILE + TILE / 2,
       dir: DIR_UP, alive: true,
       lives: PLAYER_LIVES, score: 0, cooldown: 0
@@ -225,7 +225,7 @@ export function createGame(onWin, onLose) {
 
       // revive player
       if (!state.player.alive && state.player.lives > 0) {
-        state.player.x = 9 * TILE + TILE / 2
+        state.player.x = 4 * TILE + TILE / 2
         state.player.y = 14 * TILE + TILE / 2
         state.player.alive = true
       }
@@ -237,7 +237,7 @@ export function createGame(onWin, onLose) {
     },
     reset() {
       state.map = createMap()
-      state.player.x = 9 * TILE + TILE / 2
+      state.player.x = 4 * TILE + TILE / 2
       state.player.y = 14 * TILE + TILE / 2
       state.player.dir = DIR_UP
       state.player.alive = true
@@ -263,7 +263,7 @@ export function createGame(onWin, onLose) {
       state.spawnIndex = 0
       state.enemies = []
       state.bullets = []
-      state.player.x = 9 * TILE + TILE / 2
+      state.player.x = 4 * TILE + TILE / 2
       state.player.y = 14 * TILE + TILE / 2
       state.player.dir = DIR_UP
       state.player.alive = true
