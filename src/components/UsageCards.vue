@@ -1,12 +1,14 @@
 <template>
   <section class="usage">
-    <h2 class="section-title">应用场景</h2>
-    <div class="list">
-      <div v-for="(item, i) in items" :key="item.title" class="usage-card" :style="{ '--i': i }">
-        <span class="usage-num">{{ String(i + 1).padStart(2, '0') }}</span>
-        <div class="usage-body">
-          <h3 class="usage-title">{{ item.title }}</h3>
-          <p class="usage-desc">{{ item.desc }}</p>
+    <div class="inner">
+      <h2 class="section-title">应用场景</h2>
+      <div class="list">
+        <div v-for="(item, i) in items" :key="item.title" class="usage-card">
+          <span class="usage-num">{{ pad(i + 1) }}</span>
+          <div class="usage-body">
+            <h3 class="usage-title">{{ item.title }}</h3>
+            <p class="usage-desc">{{ item.desc }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -28,52 +30,58 @@ const items = [
     desc: '上传表格或文档，AI 自动提取关键信息并生成分析结论。'
   }
 ]
+
+function pad(n) {
+  return String(n).padStart(2, '0')
+}
 </script>
 
 <style scoped>
 .usage {
   padding: 80px 24px;
+}
+
+.inner {
   max-width: 720px;
   margin: 0 auto;
 }
 
 .section-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 600;
   color: var(--text-h);
   text-align: center;
   margin: 0 0 48px;
+  letter-spacing: -0.3px;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .usage-card {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   align-items: flex-start;
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 24px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  padding: 20px 24px;
+  transition: border-color 0.2s;
 }
 
 .usage-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 4px 20px var(--shadow);
 }
 
 .usage-num {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   color: var(--accent);
-  line-height: 1;
   flex-shrink: 0;
-  min-width: 28px;
+  margin-top: 2px;
 }
 
 .usage-body {
@@ -81,10 +89,10 @@ const items = [
 }
 
 .usage-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-h);
-  margin: 0 0 8px;
+  margin: 0 0 6px;
 }
 
 .usage-desc {
@@ -99,12 +107,8 @@ const items = [
     padding: 60px 16px;
   }
   .section-title {
-    font-size: 26px;
+    font-size: 24px;
     margin-bottom: 32px;
-  }
-  .usage-card {
-    flex-direction: column;
-    gap: 12px;
   }
 }
 </style>

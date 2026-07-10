@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="footer-inner">
-      <p class="footer-copy">&copy; 2026 DeepSeek</p>
+      <span class="footer-copy">&copy; 2026 DeepSeek</span>
       <a href="https://deepseek.com" class="footer-link" target="_blank" rel="noopener">deepseek.com</a>
     </div>
   </footer>
@@ -16,7 +16,7 @@
 .footer-inner {
   max-width: 1120px;
   margin: 0 auto;
-  height: 64px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,13 +24,12 @@
 
 .footer-copy {
   font-size: 13px;
-  color: var(--text);
-  margin: 0;
+  color: var(--label-dim);
 }
 
 .footer-link {
   font-size: 13px;
-  color: var(--text);
+  color: var(--label-dim);
   text-decoration: none;
   transition: color 0.2s;
 }

@@ -1,10 +1,12 @@
 <template>
   <section class="advantages">
-    <h2 class="section-title">技术优势</h2>
-    <div class="items">
-      <div v-for="item in items" :key="item.label" class="advantage-item">
-        <span class="advantage-label">{{ item.label }}</span>
-        <span class="advantage-value">{{ item.value }}</span>
+    <div class="inner">
+      <h2 class="section-title">技术优势</h2>
+      <div class="table">
+        <div v-for="item in items" :key="item.label" class="row">
+          <span class="label">{{ item.label }}</span>
+          <span class="value">{{ item.value }}</span>
+        </div>
       </div>
     </div>
   </section>
@@ -21,47 +23,49 @@ const items = [
 
 <style scoped>
 .advantages {
+  background: var(--section-bg);
   padding: 80px 24px;
+}
+
+.inner {
   max-width: 720px;
   margin: 0 auto;
 }
 
 .section-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 600;
   color: var(--text-h);
   text-align: center;
   margin: 0 0 48px;
+  letter-spacing: -0.3px;
 }
 
-.items {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+.table {
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
 }
 
-.advantage-item {
+.row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 24px;
+  padding: 16px 24px;
   background: var(--card-bg);
 }
 
-.advantage-item + .advantage-item {
+.row + .row {
   border-top: 1px solid var(--border);
 }
 
-.advantage-label {
-  font-size: 15px;
+.label {
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-h);
 }
 
-.advantage-value {
+.value {
   font-size: 14px;
   color: var(--text);
   text-align: right;
@@ -72,15 +76,15 @@ const items = [
     padding: 60px 16px;
   }
   .section-title {
-    font-size: 26px;
+    font-size: 24px;
     margin-bottom: 32px;
   }
-  .advantage-item {
+  .row {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
   }
-  .advantage-value {
+  .value {
     text-align: left;
   }
 }

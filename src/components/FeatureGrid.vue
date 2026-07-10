@@ -1,10 +1,12 @@
 <template>
   <section class="features">
-    <h2 class="section-title">核心功能</h2>
-    <div class="grid">
-      <div v-for="f in features" :key="f.title" class="card">
-        <h3 class="card-title">{{ f.title }}</h3>
-        <p class="card-desc">{{ f.desc }}</p>
+    <div class="inner">
+      <h2 class="section-title">核心功能</h2>
+      <div class="grid">
+        <div v-for="f in features" :key="f.title" class="card">
+          <h3 class="card-title">{{ f.title }}</h3>
+          <p class="card-desc">{{ f.desc }}</p>
+        </div>
       </div>
     </div>
   </section>
@@ -33,43 +35,47 @@ const features = [
 
 <style scoped>
 .features {
+  background: var(--section-bg);
   padding: 80px 24px;
+}
+
+.inner {
   max-width: 960px;
   margin: 0 auto;
 }
 
 .section-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 600;
   color: var(--text-h);
   text-align: center;
   margin: 0 0 48px;
+  letter-spacing: -0.3px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 16px;
 }
 
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 28px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  padding: 24px;
+  transition: border-color 0.2s;
 }
 
 .card:hover {
   border-color: var(--accent);
-  box-shadow: 0 4px 20px var(--shadow);
 }
 
 .card-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-h);
-  margin: 0 0 10px;
+  margin: 0 0 8px;
 }
 
 .card-desc {
@@ -87,7 +93,7 @@ const features = [
     padding: 60px 16px;
   }
   .section-title {
-    font-size: 26px;
+    font-size: 24px;
     margin-bottom: 32px;
   }
 }

@@ -1,13 +1,15 @@
 :root {
-  --accent: #4f6ef7;
-  --accent-hover: #3b55d9;
-  --accent-glow: rgba(79, 110, 247, 0.3);
-  --bg: #f8f9fb;
-  --text: #5a6072;
-  --text-h: #1a1d29;
+  --accent: #3964fe;
+  --accent-hover: #4d6bfe;
+  --accent-glow: rgba(57, 100, 254, 0.25);
+  --bg: #ffffff;
+  --text: #61666b;
+  --text-h: #0f1115;
   --card-bg: #ffffff;
-  --border: #e6e8f0;
+  --border: rgba(0, 0, 0, 0.1);
   --shadow: rgba(0, 0, 0, 0.04);
+  --section-bg: #f9fafb;
+  --label-dim: #adb2b8;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.6;
@@ -18,15 +20,17 @@
 }
 
 html.dark {
-  --accent: #6b8aff;
-  --accent-hover: #8ba3ff;
-  --accent-glow: rgba(107, 138, 255, 0.3);
-  --bg: #0f1117;
-  --text: #8b8fa8;
-  --text-h: #e8e9f0;
-  --card-bg: #181b24;
-  --border: #282c3a;
-  --shadow: rgba(0, 0, 0, 0.2);
+  --accent: #5686fe;
+  --accent-hover: #679efe;
+  --accent-glow: rgba(86, 134, 254, 0.25);
+  --bg: #151517;
+  --text: #81858c;
+  --text-h: #f9fafb;
+  --card-bg: #232324;
+  --border: hsla(0, 0%, 100%, 0.12);
+  --shadow: rgba(0, 0, 0, 0.3);
+  --section-bg: #1b1b1c;
+  --label-dim: #545557;
 }
 
 body {

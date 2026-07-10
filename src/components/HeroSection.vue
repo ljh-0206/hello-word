@@ -1,47 +1,38 @@
 <template>
   <section class="hero">
-    <h1 class="hero-title">DeepSeek</h1>
-    <p class="hero-subtitle">新一代 AI 推理模型，激发你的创造力</p>
+    <h1 class="hero-title">探索未至之境</h1>
     <p class="hero-desc">
-      由深度求索公司研发，具备强大的推理能力、多模态理解与长上下文处理能力。
-      开源可商用，赋能每一位开发者与创作者。
+      由深度求索公司研发的 AI 推理模型，具备强大的推理能力、多模态理解与长上下文处理能力，开源可商用。
     </p>
     <div class="hero-actions">
-      <a href="https://chat.deepseek.com" class="btn btn-primary" target="_blank" rel="noopener">开始使用</a>
-      <a href="https://deepseek.com" class="btn btn-secondary" target="_blank" rel="noopener">了解更多</a>
+      <a href="https://chat.deepseek.com" class="btn btn-primary" target="_blank" rel="noopener">开始对话</a>
+      <a href="https://platform.deepseek.com" class="btn btn-outline" target="_blank" rel="noopener">API 开放平台</a>
     </div>
   </section>
 </template>
 
 <style scoped>
 .hero {
-  padding: 140px 24px 80px;
+  padding: 120px 24px 64px;
   text-align: center;
-  max-width: 720px;
+  max-width: 640px;
   margin: 0 auto;
 }
 
 .hero-title {
-  font-size: 56px;
+  font-size: 48px;
   font-weight: 700;
   color: var(--text-h);
-  letter-spacing: -1.5px;
+  letter-spacing: -1.2px;
   margin: 0 0 16px;
-  line-height: 1.1;
-}
-
-.hero-subtitle {
-  font-size: 22px;
-  color: var(--accent);
-  margin: 0 0 20px;
-  font-weight: 500;
+  line-height: 1.15;
 }
 
 .hero-desc {
-  font-size: 17px;
+  font-size: 16px;
   color: var(--text);
   line-height: 1.7;
-  margin: 0 0 36px;
+  margin: 0 0 32px;
 }
 
 .hero-actions {
@@ -54,12 +45,12 @@
 .btn {
   display: inline-flex;
   align-items: center;
-  padding: 12px 28px;
+  padding: 10px 24px;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .btn-primary {
@@ -69,29 +60,25 @@
 
 .btn-primary:hover {
   background: var(--accent-hover);
-  box-shadow: 0 4px 14px var(--accent-glow);
 }
 
-.btn-secondary {
-  background: var(--card-bg);
+.btn-outline {
+  background: transparent;
   color: var(--text-h);
   border: 1px solid var(--border);
 }
 
-.btn-secondary:hover {
+.btn-outline:hover {
   border-color: var(--accent);
   color: var(--accent);
 }
 
 @media (max-width: 640px) {
   .hero {
-    padding: 120px 16px 60px;
+    padding: 100px 16px 48px;
   }
   .hero-title {
-    font-size: 36px;
-  }
-  .hero-subtitle {
-    font-size: 18px;
+    font-size: 32px;
   }
   .hero-desc {
     font-size: 15px;
