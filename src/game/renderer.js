@@ -19,7 +19,7 @@ export function render(ctx, state) {
     drawTank(ctx, state.player)
   }
 
-  drawForest(ctx, state.map)
+  drawForestOverlay(ctx, state.map)
 
   for (const b of state.bullets) {
     ctx.fillStyle = b.isPlayer ? '#ffff66' : '#ffffff'
@@ -43,12 +43,14 @@ export function render(ctx, state) {
   }
 
   renderUI(ctx, state)
+  renderPause(ctx, state)
 }
 
 function drawTerrain(ctx, map) {
   for (let r = 0; r < map.length; r++) {
     for (let c = 0; c < map[r].length; c++) {
       const t = map[r][c]
+      if (t === TILE_FOREST) continue
       const x = c * TILE
       const y = r * TILE
       if (t === TILE_BRICK) {
@@ -105,7 +107,9 @@ function drawTerrain(ctx, map) {
   }
 }
 
-function drawForest(ctx, map) {
+function drawForestOverlay(ctx, map) {
+  ctx.save()
+  ctx.globalAlpha = 0.35
   for (let r = 0; r < map.length; r++) {
     for (let c = 0; c < map[r].length; c++) {
       if (map[r][c] === TILE_FOREST) {
@@ -129,6 +133,7 @@ function drawForest(ctx, map) {
       }
     }
   }
+  ctx.restore()
 }
 
 function getTankColors(type) {
@@ -176,13 +181,11 @@ function drawTank(ctx, tank) {
   ctx.fillRect(-half, -half + 2, 4, TANK_SIZE - 4)
   ctx.fillRect(half - 4, -half + 2, 4, TANK_SIZE - 4)
 
-  // heavy tank armor marks
   if (tank.type === TANK_HEAVY) {
     ctx.strokeStyle = '#fff'
     ctx.lineWidth = 1
     ctx.strokeRect(-half + 6, -half + 6, TANK_SIZE - 12, TANK_SIZE - 12)
   }
-  // fire level marks on player
   if (tank.isPlayer && tank.fireLevel >= 2) {
     ctx.fillStyle = '#fff'
     ctx.fillRect(-1, -half - 6, 2, 4)
@@ -205,8 +208,23 @@ function drawTank(ctx, tank) {
     ctx.beginPath()
     ctx.arc(tank.x, tank.y, half + 6, 0, Math.PI * 2)
     ctx.stroke()
-    ctx.restore()
-  }
+  ctx.restore()
+}
+
+function renderPause(ctx, state) {
+  if (!state.paused) return
+  ctx.save()
+  ctx.fillStyle = 'rgba(0,0,0,0.5)'
+  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
+  ctx.fillStyle = '#ffffff'
+  ctx.font = 'bold 42px monospace'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('暂停', CANVAS_W / 2, CANVAS_H / 2 - 10)
+  ctx.font = '14px monospace'
+  ctx.fillText('按 P 继续', CANVAS_W / 2, CANVAS_H / 2 + 30)
+  ctx.restore()
+}
 }
 
 function drawPowerUp(ctx, pu, timer) {
@@ -242,9 +260,9 @@ function renderUI(ctx, state) {
   ctx.font = '12px monospace'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'top'
-  ctx.fillText('SCORE: ' + state.player.score, 8, 8)
+  ctx.fillText('得分: ' + state.player.score, 8, 8)
   ctx.textAlign = 'right'
-  ctx.fillText('LIVES: ' + state.player.lives + '  WAVE: ' + state.wave, CANVAS_W - 8, 8)
+  ctx.fillText('命数: ' + state.player.lives + '  关卡: ' + state.wave, CANVAS_W - 8, 8)
 
   if (state.gameOver) {
     ctx.fillStyle = 'rgba(0,0,0,0.6)'
@@ -253,10 +271,25 @@ function renderUI(ctx, state) {
     ctx.font = 'bold 36px monospace'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText(state.win ? 'STAGE CLEAR!' : 'GAME OVER', CANVAS_W / 2, CANVAS_H / 2 - 30)
+    ctx.fillText(state.win ? '过关！' : '游戏结束', CANVAS_W / 2, CANVAS_H / 2 - 30)
     ctx.font = '14px monospace'
-    ctx.fillText(state.win ? 'Press ENTER for next stage' : 'Press ENTER to restart', CANVAS_W / 2, CANVAS_H / 2 + 20)
-    ctx.fillText('Press ESC to exit', CANVAS_W / 2, CANVAS_H / 2 + 42)
+    ctx.fillText(state.win ? '按 Enter 进入下一关' : '按 Enter 重新开始', CANVAS_W / 2, CANVAS_H / 2 + 20)
+    ctx.fillText('按 ESC 退出', CANVAS_W / 2, CANVAS_H / 2 + 42)
   }
+  ctx.restore()
+}
+
+function renderPause(ctx, state) {
+  if (!state.paused) return
+  ctx.save()
+  ctx.fillStyle = 'rgba(0,0,0,0.5)'
+  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
+  ctx.fillStyle = '#ffffff'
+  ctx.font = 'bold 42px monospace'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('暂停', CANVAS_W / 2, CANVAS_H / 2 - 10)
+  ctx.font = '14px monospace'
+  ctx.fillText('按 P 继续', CANVAS_W / 2, CANVAS_H / 2 + 30)
   ctx.restore()
 }

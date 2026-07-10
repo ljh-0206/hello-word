@@ -9,6 +9,7 @@ import {
   COLS, ROWS, CANVAS_W, CANVAS_H
 } from './constants.js'
 import { createMap, cloneMap, SPAWN_POINTS } from './map.js'
+import { audio } from './audio.js'
 
 const DIR_DELTA = {
   [DIR_UP]:    { x: 0, y: -1 },
@@ -31,10 +32,6 @@ function tileAt(map, px, py) {
   const r = Math.floor(py / TILE)
   if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return -1
   return map[r][c]
-}
-
-function isSolidTile(t) {
-  return t === TILE_BRICK || t === TILE_STEEL || t === TILE_BASE || t === TILE_WATER
 }
 
 function canMoveTo(map, x, y, size, allTanks) {
@@ -96,8 +93,14 @@ function spawnEnemy(state) {
   const blocked = !canMoveTo(state.map, ex, ey, TANK_SIZE, allButNew)
   if (blocked) return
 
-  const types = [TANK_REGULAR, TANK_REGULAR, TANK_REGULAR, TANK_FAST, TANK_HEAVY]
-  const roll = state.wave > 3 ? (Math.random() * types.length) | 0 : (Math.random() * 3) | 0
+  const w = state.wave
+  const types = []
+  for (let i = 0; i < 5; i++) types.push(TANK_REGULAR)
+  if (w >= 2) { types.push(TANK_FAST); types.push(TANK_FAST) }
+  if (w >= 3) { types.push(TANK_HEAVY) }
+  if (w >= 4) { types.push(TANK_HEAVY); types.push(TANK_HEAVY) }
+
+  const roll = (Math.random() * types.length) | 0
   const type = types[Math.min(roll, types.length - 1)]
   const hp = type === TANK_HEAVY ? 3 : 1
   const speed = type === TANK_FAST ? TANK_FAST_SPEED : TANK_SPEED
@@ -106,7 +109,7 @@ function spawnEnemy(state) {
     x: ex, y: ey, dir: DIR_DOWN, alive: true,
     type, hp, speed,
     cooldown: 0, moveDir: DIR_DOWN,
-    changeDirTimer: 60 + Math.random() * 120 | 0,
+    changeDirTimer: Math.max(30, 60 + Math.random() * 120 - w * 5) | 0,
     invulnTimer: SPAWN_FLASH_DURATION
   })
   state.spawned++
@@ -117,14 +120,18 @@ function randomPowerUp() {
   return powers[(Math.random() * powers.length) | 0]
 }
 
+function getPowerUpDropRate(wave) {
+  return Math.max(2, 4 - Math.floor(wave / 3))
+}
+
 export function createGame(onWin, onLose) {
-  const map = createMap()
+  const map = createMap(1)
   const state = {
     map,
     player: {
       x: 4 * TILE + TILE / 2,
       y: 14 * TILE + TILE / 2,
-      dir: DIR_UP, alive: true,
+      dir: DIR_UP, alive: true, isPlayer: true,
       lives: PLAYER_LIVES, score: 0, cooldown: 0,
       invulnTimer: INVULN_DURATION,
       fireLevel: 1,
@@ -144,7 +151,9 @@ export function createGame(onWin, onLose) {
     powerUp: null,
     powerUpTimer: 0,
     killCount: 0,
-    powerUpCooldown: 0
+    powerUpCooldown: 0,
+    paused: false,
+    frameCount: 0
   }
 
   function addExplosion(x, y, big) {
@@ -179,11 +188,14 @@ export function createGame(onWin, onLose) {
         isPlayer: true
       })
     }
+
+    if (isPlayer) audio.shoot()
   }
 
   function killTank(tank) {
     tank.alive = false
     addExplosion(tank.x, tank.y, true)
+    audio.explosion()
   }
 
   function collectPowerUp() {
@@ -207,12 +219,14 @@ export function createGame(onWin, onLose) {
     }
     state.powerUp = null
     state.powerUpTimer = 0
+    audio.powerUp()
   }
 
   return {
     state,
     update() {
-      if (state.gameOver) return
+      if (state.gameOver || state.paused) return
+      state.frameCount++
 
       const enemyTanksOnly = [...state.enemies]
 
@@ -245,7 +259,7 @@ export function createGame(onWin, onLose) {
 
         e.changeDirTimer--
         if (e.changeDirTimer <= 0 || !canMoveTo(state.map, e.x, e.y, TANK_SIZE, allOtherTanks)) {
-          e.changeDirTimer = 60 + Math.random() * 90 | 0
+          e.changeDirTimer = Math.max(30, 60 + Math.random() * 90 - state.wave * 5) | 0
           const dirs = [DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT]
           const shuffled = dirs.sort(() => Math.random() - 0.5)
           let moved = false
@@ -265,8 +279,10 @@ export function createGame(onWin, onLose) {
 
         e.cooldown--
         if (e.cooldown <= 0) {
-          e.cooldown = e.type === TANK_HEAVY ? 90 : 45 + Math.random() * 45 | 0
+          const cd = e.type === TANK_HEAVY ? 90 : Math.max(20, 45 + Math.random() * 45 - state.wave * 3) | 0
+          e.cooldown = cd
           fire(e, false)
+          if (!e.isPlayer) audio.shoot()
         }
       }
       state.enemies = state.enemies.filter(e => e.alive)
@@ -286,11 +302,14 @@ export function createGame(onWin, onLose) {
           if (t === TILE_BRICK) {
             destroyTile(state.map, b.x, b.y)
             remove = true
+            audio.hit()
           } else if (t === TILE_STEEL) {
             remove = true
+            audio.hit()
           } else if (t === TILE_BASE) {
             state.map[Math.floor(b.y / TILE)][Math.floor(b.x / TILE)] = 0
             addExplosion(b.x, b.y, true)
+            audio.explosion()
             onLose(state)
             remove = true
           } else if (t !== TILE_WATER && t !== TILE_FOREST) {
@@ -304,13 +323,16 @@ export function createGame(onWin, onLose) {
                   state.player.score += score
                   e.hp--
                   if (e.hp <= 0) {
-                    killTank(e, true)
+                    killTank(e)
                     state.killCount++
                     state.powerUpCooldown++
-                    if (state.killCount % 4 === 0 && !state.powerUp) {
+                    const dropRate = getPowerUpDropRate(state.wave)
+                    if (state.killCount % dropRate === 0 && !state.powerUp) {
                       state.powerUp = { x: e.x, y: e.y, type: randomPowerUp(), timer: 600 }
                       state.powerUpTimer = 0
                     }
+                  } else {
+                    audio.hit()
                   }
                   remove = true
                   break
@@ -343,8 +365,9 @@ export function createGame(onWin, onLose) {
       }
 
       // spawn enemies
+      const spawnInterval = Math.max(60, 150 - state.wave * 10)
       state.spawnTimer++
-      if (state.spawnTimer >= 150 && state.enemies.filter(e => e.alive && e.invulnTimer <= 0).length < 3 && state.spawned < state.totalEnemies) {
+      if (state.spawnTimer >= spawnInterval && state.enemies.filter(e => e.alive && e.invulnTimer <= 0).length < 3 && state.spawned < state.totalEnemies) {
         state.spawnTimer = 0
         spawnEnemy(state)
       }
@@ -382,7 +405,7 @@ export function createGame(onWin, onLose) {
       }
     },
     reset() {
-      state.map = createMap()
+      state.map = createMap(1)
       state.player.x = 4 * TILE + TILE / 2
       state.player.y = 14 * TILE + TILE / 2
       state.player.dir = DIR_UP
@@ -407,10 +430,13 @@ export function createGame(onWin, onLose) {
       state.powerUpTimer = 0
       state.killCount = 0
       state.powerUpCooldown = 0
+      state.paused = false
+      state.frameCount = 0
     },
     nextWave() {
-      state.wave++
-      state.totalEnemies = 6 + state.wave * 3
+      const next = state.wave + 1
+      state.wave = next
+      state.totalEnemies = 6 + next * 3
       state.spawned = 0
       state.spawnTimer = 0
       state.spawnIndex = 0
@@ -424,11 +450,15 @@ export function createGame(onWin, onLose) {
       state.player.cooldown = 0
       state.player.invulnTimer = INVULN_DURATION
       state.player.fireLevel = Math.max(1, state.player.fireLevel)
-      state.map = cloneMap(createMap())
+      state.map = cloneMap(createMap(next))
       state.gameOver = false
       state.win = false
       state.powerUp = null
       state.powerUpTimer = 0
+      state.paused = false
+    },
+    togglePause() {
+      if (!state.gameOver) state.paused = !state.paused
     }
   }
 }
