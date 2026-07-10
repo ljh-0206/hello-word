@@ -1,8 +1,8 @@
-export const CANVAS_W = 640
-export const CANVAS_H = 480
+export const CANVAS_W = 1024
+export const CANVAS_H = 576
 export const TILE = 32
-export const COLS = 20
-export const ROWS = 15
+export const COLS = 32
+export const ROWS = 18
 
 export const TANK_SIZE = 28
 export const TANK_SPEED = 2

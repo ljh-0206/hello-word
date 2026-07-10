@@ -1,5 +1,12 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+
 defineEmits(['start', 'close'])
+const isMobile = ref(false)
+
+onMounted(() => {
+  isMobile.value = matchMedia('(hover: none) and (pointer: coarse)').matches
+})
 </script>
 
 <template>
@@ -26,33 +33,56 @@ defineEmits(['start', 'close'])
       <div class="section">
         <h3 class="section-title">🎮 操作方式</h3>
         <div class="info-grid">
-          <div class="info-item">
-            <span class="key">↑ ↓ ← →</span>
-            <span class="val">移动</span>
-          </div>
-          <div class="info-item">
-            <span class="key">空格 / J</span>
-            <span class="val">射击</span>
-          </div>
-          <div class="info-item">
-            <span class="key">P / ESC</span>
-            <span class="val">暂停</span>
-          </div>
-          <div class="info-item">
-            <span class="key">Enter</span>
-            <span class="val">重新开始 / 下一关</span>
-          </div>
+          <template v-if="!isMobile">
+            <div class="info-item">
+              <span class="key">↑ ↓ ← →</span>
+              <span class="val">移动</span>
+            </div>
+            <div class="info-item">
+              <span class="key">空格 / J</span>
+              <span class="val">射击</span>
+            </div>
+            <div class="info-item">
+              <span class="key">P / ESC</span>
+              <span class="val">暂停</span>
+            </div>
+            <div class="info-item">
+              <span class="key">Enter</span>
+              <span class="val">重新开始 / 下一关</span>
+            </div>
+          </template>
+          <template v-else>
+            <div class="info-item">
+              <span class="key">左侧摇杆</span>
+              <span class="val">移动</span>
+            </div>
+            <div class="info-item">
+              <span class="key">右侧⚡按钮</span>
+              <span class="val">射击</span>
+            </div>
+            <div class="info-item">
+              <span class="key">⏸ 按钮</span>
+              <span class="val">暂停</span>
+            </div>
+            <div class="info-item">
+              <span class="key">Enter</span>
+              <span class="val">重新开始 / 下一关</span>
+            </div>
+          </template>
         </div>
       </div>
 
       <div class="section">
         <h3 class="section-title">✨ 游戏特色</h3>
         <ul class="feature-list">
-          <li>20 个关卡，难度逐步递增</li>
-          <li>4 种敌人类型（普通 / 快速 / 重型 / 装甲）</li>
-          <li>6 种道具（星 / 坦克 / 炸弹 / 船 / 手套 / 护盾）</li>
-          <li>4 种地形（砖墙 / 钢墙 / 水域 / 森林）</li>
-          <li>双人合作模式 · 排行榜系统</li>
+          <li v-for="feat in [
+            '多关卡地图，难度逐步递增',
+            '4 种敌人类型（普通 / 快速 / 重型 / 装甲）',
+            '多种道具（星 / 护盾 / 炸弹等）',
+            '4 种地形（砖墙 / 钢墙 / 水域 / 森林）',
+            '排行榜系统 · 记录你的最佳战绩',
+            isMobile ? '支持触屏操作' : '键盘操作 + 触屏适配'
+          ]" :key="feat">{{ feat }}</li>
         </ul>
       </div>
 
@@ -264,5 +294,12 @@ defineEmits(['start', 'close'])
 .btn-outline:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+@media (max-width: 480px) {
+  .modal { padding: 20px 16px }
+  .info-grid { grid-template-columns: 1fr 1fr; gap: 6px }
+  .feature-list { grid-template-columns: 1fr; gap: 5px }
+  .modal-title { font-size: 20px }
 }
 </style>

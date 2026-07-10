@@ -43,7 +43,6 @@ export function render(ctx, state) {
   }
 
   renderUI(ctx, state)
-  renderPause(ctx, state)
 }
 
 function drawTerrain(ctx, map) {
@@ -210,21 +209,6 @@ function drawTank(ctx, tank) {
     ctx.stroke()
   ctx.restore()
 }
-
-function renderPause(ctx, state) {
-  if (!state.paused) return
-  ctx.save()
-  ctx.fillStyle = 'rgba(0,0,0,0.5)'
-  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 42px monospace'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText('暂停', CANVAS_W / 2, CANVAS_H / 2 - 10)
-  ctx.font = '14px monospace'
-  ctx.fillText('按 P 继续', CANVAS_W / 2, CANVAS_H / 2 + 30)
-  ctx.restore()
-}
 }
 
 function drawPowerUp(ctx, pu, timer) {
@@ -279,17 +263,4 @@ function renderUI(ctx, state) {
   ctx.restore()
 }
 
-function renderPause(ctx, state) {
-  if (!state.paused) return
-  ctx.save()
-  ctx.fillStyle = 'rgba(0,0,0,0.5)'
-  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
-  ctx.fillStyle = '#ffffff'
-  ctx.font = 'bold 42px monospace'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText('暂停', CANVAS_W / 2, CANVAS_H / 2 - 10)
-  ctx.font = '14px monospace'
-  ctx.fillText('按 P 继续', CANVAS_W / 2, CANVAS_H / 2 + 30)
-  ctx.restore()
-}
+

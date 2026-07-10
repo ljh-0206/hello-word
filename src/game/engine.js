@@ -129,8 +129,8 @@ export function createGame(onWin, onLose) {
   const state = {
     map,
     player: {
-      x: 4 * TILE + TILE / 2,
-      y: 14 * TILE + TILE / 2,
+      x: 5 * TILE + TILE / 2,
+      y: 17 * TILE + TILE / 2,
       dir: DIR_UP, alive: true, isPlayer: true,
       lives: PLAYER_LIVES, score: 0, cooldown: 0,
       invulnTimer: INVULN_DURATION,
@@ -152,7 +152,7 @@ export function createGame(onWin, onLose) {
     powerUpTimer: 0,
     killCount: 0,
     powerUpCooldown: 0,
-    paused: false,
+    paused: true,
     frameCount: 0
   }
 
@@ -224,6 +224,9 @@ export function createGame(onWin, onLose) {
 
   return {
     state,
+    start() {
+      state.paused = false
+    },
     update() {
       if (state.gameOver || state.paused) return
       state.frameCount++
@@ -406,8 +409,8 @@ export function createGame(onWin, onLose) {
     },
     reset() {
       state.map = createMap(1)
-      state.player.x = 4 * TILE + TILE / 2
-      state.player.y = 14 * TILE + TILE / 2
+      state.player.x = 5 * TILE + TILE / 2
+      state.player.y = 17 * TILE + TILE / 2
       state.player.dir = DIR_UP
       state.player.alive = true
       state.player.lives = PLAYER_LIVES
@@ -443,8 +446,8 @@ export function createGame(onWin, onLose) {
       state.enemies = []
       state.bullets = []
       state.explosions = []
-      state.player.x = 4 * TILE + TILE / 2
-      state.player.y = 14 * TILE + TILE / 2
+      state.player.x = 5 * TILE + TILE / 2
+      state.player.y = 17 * TILE + TILE / 2
       state.player.dir = DIR_UP
       state.player.alive = true
       state.player.cooldown = 0
@@ -455,7 +458,6 @@ export function createGame(onWin, onLose) {
       state.win = false
       state.powerUp = null
       state.powerUpTimer = 0
-      state.paused = false
     },
     togglePause() {
       if (!state.gameOver) state.paused = !state.paused

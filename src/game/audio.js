@@ -5,6 +5,7 @@ const BGM_NOTES = [262, 294, 330, 349, 392, 349, 330, 294]
 
 function getCtx() {
   if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)()
+  if (ctx.state === 'suspended') ctx.resume()
   return ctx
 }
 
@@ -117,5 +118,9 @@ export const audio = {
       clearInterval(bgmInterval)
       bgmInterval = null
     }
+  },
+  resume() {
+    const ac = getCtx()
+    if (ac.state === 'suspended') ac.resume()
   }
 }
